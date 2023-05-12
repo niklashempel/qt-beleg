@@ -2,6 +2,7 @@
 #define MEDIUM_HPP
 
 #include <QString>
+#include "person.hpp"
 
 class Medium
 {
@@ -9,7 +10,7 @@ private:
     QString title;
     QString creator;
     int year;
-    Person owner;
+    Person *owner = NULL;
 
 public:
     Medium(QString title, QString creator, int year) : title(title), creator(creator), year(year){};
