@@ -4,6 +4,7 @@
 #include <iostream>
 #include "person.hpp"
 #include "datastore.hpp"
+#include "list.hpp"
 
 using namespace std;
 
@@ -12,11 +13,9 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
     MainWindow w;
 
-    Person person("Max", "Mustermann");
-
     Datastore<Person> personStore("persons.txt");
 
-    personStore.save(&person);
+    List<Person> persons = personStore.load();
 
     w.show();
     return a.exec();

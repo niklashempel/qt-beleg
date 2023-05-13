@@ -24,6 +24,7 @@ set(PROJECT_SOURCES
     mainwindow.h
     mainwindow.ui
     datastore.hpp
+    list.hpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
