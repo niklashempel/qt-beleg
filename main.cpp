@@ -5,6 +5,8 @@
 #include "person.hpp"
 #include "datastore.hpp"
 #include "list.hpp"
+#include "book.hpp"
+#include "medium.hpp"
 
 using namespace std;
 
@@ -14,8 +16,10 @@ int main(int argc, char *argv[])
     MainWindow w;
 
     Datastore<Person> personStore("persons.txt");
+    Datastore<Medium> mediumStore("media.txt");
 
-    List<Person> persons = personStore.load();
+    List<Person *> persons = personStore.load();
+    List<Medium *> media = mediumStore.load();
 
     w.show();
     return a.exec();

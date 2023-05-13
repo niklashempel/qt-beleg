@@ -3,6 +3,7 @@
 
 #include <QString>
 #include <QDataStream>
+#include <QStringList>
 
 class Person
 {
@@ -12,11 +13,13 @@ private:
 
 public:
     Person(QString firstName, QString lastName) : firstName(firstName), lastName(lastName){};
-    QString getFirstName() { return this->firstName; }
-    QString getLastName() { return this->lastName; }
+    Person() : firstName(""), lastName(""){};
+    QString getFirstName() const { return this->firstName; }
+    QString getLastName() const { return this->lastName; }
     void setFirstName(QString firstName) { this->firstName = firstName; }
     void setLastName(QString lastName) { this->lastName = lastName; };
-    QString print() { return this->firstName + "," + this->lastName; };
+    QString print() const { return this->firstName + "," + this->lastName; };
+    static Person *parse(QString line);
 };
 
 #endif // PERSON_HPP

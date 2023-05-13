@@ -1,13 +1,14 @@
 #ifndef DATASTORE_HPP
 #define DATASTORE_HPP
 
-#include <QString>
-#include <QSaveFile>
-#include <QTextStream>
-#include <QIODevice>
 #include <iostream>
+#include <QIODevice>
 #include <QFileInfo>
+#include <QSaveFile>
+#include <QString>
+#include <QTextStream>
 #include "list.hpp"
+#include "medium.hpp"
 
 template <class T>
 class Datastore
@@ -17,12 +18,12 @@ private:
 
 public:
     Datastore(QString file) : file(file){};
-    void save(List<T> data);
-    List<T> load();
+    void save(List<T *> data) const;
+    List<T *> load() const;
 };
 
 template <class T>
-inline List<T> Datastore<T>::load()
+inline List<T *> Datastore<T>::load() const
 {
     QFile file(this->file);
 
@@ -38,7 +39,7 @@ inline List<T> Datastore<T>::load()
         }
         stream.seek(0);
 
-        List<T> data(lines);
+        List<T *> data(lines);
 
         for (int i = 0; i < lines; i++)
         {
@@ -51,12 +52,12 @@ inline List<T> Datastore<T>::load()
     else
     {
         std::cout << "Could not open file" << std::endl;
-        return List<T>(0);
+        return List<T *>(0);
     }
 }
 
 template <class T>
-void Datastore<T>::save(List<T> data)
+void Datastore<T>::save(List<T *> data) const
 {
     QSaveFile *file = new QSaveFile(this->file);
 
@@ -68,11 +69,11 @@ void Datastore<T>::save(List<T> data)
 
         for (int i = 0; i < size - 1; i++)
         {
-            stream << data[i].print() << "\n";
+            stream << data[i]->print() << "\n";
         }
         if (size > 0)
         {
-            stream << data[size - 1].print();
+            stream << data[size - 1]->print();
         }
 
         stream.flush();

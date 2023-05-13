@@ -18,13 +18,16 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
 set(PROJECT_SOURCES
     person.hpp
+    person.cpp
     medium.hpp
+    medium.cpp
+    book.hpp
+    list.hpp
+    datastore.hpp
     main.cpp
     mainwindow.cpp
     mainwindow.h
     mainwindow.ui
-    datastore.hpp
-    list.hpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
