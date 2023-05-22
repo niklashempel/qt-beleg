@@ -24,6 +24,42 @@ public:
         tail = nullptr;
         size = 0;
     };
+    List(const List &other)
+    {
+        head = nullptr;
+        tail = nullptr;
+        size = 0;
+        Node<T> *current = other.head;
+        while (current != nullptr)
+        {
+            add(current->item);
+            current = current->next;
+        }
+    }
+    List &operator=(const List &other)
+    {
+        if (this != &other)
+        {
+            Node<T> *current = head;
+            while (current != nullptr)
+            {
+                Node<T> *next = current->next;
+                delete current->item;
+                delete current;
+                current = next;
+            }
+            head = nullptr;
+            tail = nullptr;
+            size = 0;
+            current = other.head;
+            while (current != nullptr)
+            {
+                add(current->item);
+                current = current->next;
+            }
+        }
+        return *this;
+    }
     ~List()
     {
         Node<T> *current = head;
@@ -85,10 +121,14 @@ public:
             current = current->next;
         }
     };
-    int getSize()
+    int getSize() const noexcept
     {
         return size;
     };
+    bool isEmpty() const
+    {
+        return size == 0;
+    }
     Node<T> *getHead()
     {
         return head;
