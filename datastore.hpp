@@ -8,7 +8,6 @@
 #include <QString>
 #include <QTextStream>
 #include "list.hpp"
-#include "medium.hpp"
 
 template <class T>
 class Datastore
@@ -18,46 +17,35 @@ private:
 
 public:
     Datastore(QString file) : file(file){};
-    void save(List<T *> data) const;
-    List<T *> load() const;
+    void save(List<T> *data) const;
+    List<T> *load();
 };
 
 template <class T>
-inline List<T *> Datastore<T>::load() const
+inline List<T> *Datastore<T>::load()
 {
     QFile file(this->file);
 
-    int lines = 0;
+    List<T> *data = new List<T>();
 
     if (file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
         QTextStream stream(&file);
         while (!stream.atEnd())
         {
-            stream.readLine();
-            lines++;
-        }
-        stream.seek(0);
-
-        List<T *> data(lines);
-
-        for (int i = 0; i < lines; i++)
-        {
             QString line = stream.readLine();
-            data[i] = T::parse(line);
+            data->add(T::parse(line));
         }
-
-        return data;
     }
     else
     {
         std::cout << "Could not open file" << std::endl;
-        return List<T *>(0);
     }
+    return data;
 }
 
 template <class T>
-void Datastore<T>::save(List<T *> data) const
+void Datastore<T>::save(List<T> *data) const
 {
     QSaveFile *file = new QSaveFile(this->file);
 
@@ -65,15 +53,12 @@ void Datastore<T>::save(List<T *> data) const
     {
         QTextStream stream(file);
 
-        int size = data.getSize();
+        Node<T> *current = data->getHead();
 
-        for (int i = 0; i < size - 1; i++)
+        while (current != nullptr && current->item != nullptr)
         {
-            stream << data[i]->print() << "\n";
-        }
-        if (size > 0)
-        {
-            stream << data[size - 1]->print();
+            stream << current->item->print() << "\n";
+            current = current->next;
         }
 
         stream.flush();

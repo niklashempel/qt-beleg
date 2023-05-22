@@ -22,6 +22,7 @@ public:
 
 private:
     Ui::MainWindow *ui;
+    void TableWidgetDisplay();
 };
 
 #endif // MAINWINDOW_H
