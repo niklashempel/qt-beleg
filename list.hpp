@@ -90,7 +90,7 @@ public:
         }
         size++;
     };
-    void remove(T *item)
+    void remove(const T *item)
     {
         Node<T> *current = head;
         while (current != nullptr)
@@ -137,6 +137,44 @@ public:
     {
         return tail;
     };
+
+    struct Iterator
+    {
+        Node<T> *current;
+        Iterator(Node<T> *current) : current(current){};
+        Iterator &operator++()
+        {
+            current = current->next;
+            return *this;
+        }
+        Iterator &operator--()
+        {
+            current = current->previous;
+            return *this;
+        }
+        bool operator==(const Iterator &other) const
+        {
+            return current == other.current;
+        }
+        bool operator!=(const Iterator &other) const
+        {
+            return current != other.current;
+        }
+        T &operator*() const
+        {
+            return *(current->item);
+        }
+    };
+
+    Iterator begin()
+    {
+        return Iterator(head);
+    }
+
+    Iterator end()
+    {
+        return Iterator(nullptr);
+    }
 };
 
 #endif // LIST_HPP

@@ -53,12 +53,9 @@ void Datastore<T>::save(List<T> *data) const
     {
         QTextStream stream(file);
 
-        Node<T> *current = data->getHead();
-
-        while (current != nullptr && current->item != nullptr)
+        for (auto &item : *data)
         {
-            stream << current->item->print() << "\n";
-            current = current->next;
+            stream << item.print() << "\n";
         }
 
         stream.flush();

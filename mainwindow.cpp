@@ -44,29 +44,27 @@ void MainWindow::TableWidgetDisplay()
 
     int row = 0;
 
-    Node<Medium> *current = media->getHead();
-
-    while (current != nullptr && current->item != nullptr)
+    for (auto &item : *media)
     {
         table->insertRow(row);
 
-        QTableWidgetItem *title = new QTableWidgetItem(current->item->getTitle());
+        QTableWidgetItem *title = new QTableWidgetItem(item.getTitle());
         table->setItem(row, 0, title);
 
-        QTableWidgetItem *year = new QTableWidgetItem(QString::number(current->item->getYear()));
+        QTableWidgetItem *year = new QTableWidgetItem(QString::number(item.getYear()));
         table->setItem(row, 1, year);
 
         QPushButton *deleteButton = new QPushButton("Delete");
         table->setCellWidget(row, 2, deleteButton);
 
+        Medium *pItem = &item;
         QObject::connect(deleteButton, &QPushButton::clicked, [=]()
                          {
                              int row = table->currentRow();
                              table->removeRow(row);
-                             media->remove(current->item);
+                             media->remove(pItem);
                              mediumStore.save(media); });
         row++;
-        current = current->next;
     }
 
     this->setCentralWidget(table);
