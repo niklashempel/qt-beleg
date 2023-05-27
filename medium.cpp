@@ -5,10 +5,10 @@
 Medium *Medium::parse(QString line)
 {
     QStringList parts = line.split(",");
-    switch (parts[0].toInt())
+    switch (parts[1].toInt())
     {
     case MediumType::BOOK:
-        return new Book(parts[1], parts[2], parts[3].toInt());
+        return new Book(QUuid::fromString(parts[0]), parts[2], parts[3], parts[4].toInt());
         break;
 
     case MediumType::CD:
