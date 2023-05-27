@@ -3,6 +3,9 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "datastore.hpp"
+#include "medium.hpp"
+#include "qgridlayout.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui
@@ -22,7 +25,9 @@ public:
 
 private:
     Ui::MainWindow *ui;
-    void TableWidgetDisplay();
+    void TableWidgetDisplay(QGridLayout *);
+    void EditWidgetDisplay(Medium *medium, QGridLayout *);
+    Datastore<Medium> mediumStore;
 };
 
 #endif // MAINWINDOW_H
