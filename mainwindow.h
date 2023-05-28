@@ -5,7 +5,7 @@
 #include <QMainWindow>
 #include "datastore.hpp"
 #include "medium.hpp"
-#include "qgridlayout.h"
+#include <QDialogButtonBox>
 
 QT_BEGIN_NAMESPACE
 namespace Ui
@@ -25,9 +25,14 @@ public:
 
 private:
     Ui::MainWindow *ui;
-    void TableWidgetDisplay(QGridLayout *);
-    void EditWidgetDisplay(Medium *medium, QGridLayout *);
+    void LoadMedia();
+    void AddMedium();
+    void InitializeButtons();
+    void SetAddMediumVisible(bool);
+    void SetMediaListVisible(bool);
+    void InitializeEditMedium();
     Datastore<Medium> mediumStore;
+    QDialogButtonBox *dialogButtonBox;
 };
 
 #endif // MAINWINDOW_H

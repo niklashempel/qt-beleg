@@ -14,13 +14,17 @@
 #include <QLineEdit>
 #include <QGridLayout>
 #include <QDialogButtonBox>
+#include <QComboBox>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow), mediumStore("media.txt")
 {
     ui->setupUi(this);
-    QGridLayout *gridLayout = this->findChild<QGridLayout *>("gridLayout");
-    TableWidgetDisplay(gridLayout);
+
+    InitializeButtons();
+    InitializeEditMedium();
+    SetAddMediumVisible(false);
+    SetMediaListVisible(true);
 }
 
 MainWindow::~MainWindow()
@@ -28,53 +32,72 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::EditWidgetDisplay(Medium *medium, QGridLayout *gridLayout)
+void MainWindow::InitializeButtons()
 {
-    // Check type of medium
-    if (dynamic_cast<Book *>(medium))
+    QPushButton *addMediumButton = this->findChild<QPushButton *>("addMediumButton");
+    QObject::connect(addMediumButton, &QPushButton::clicked, [=]()
+                     { AddMedium(); });
+
+    QPushButton *backButton = this->findChild<QPushButton *>("backButton");
+    QObject::connect(backButton, &QPushButton::clicked, [=]()
+                     { SetAddMediumVisible(false);
+                       SetMediaListVisible(true); });
+}
+
+void MainWindow::InitializeEditMedium()
+{
+    QFormLayout *formLayout = this->findChild<QFormLayout *>("addMediumLayout");
+    this->dialogButtonBox = new QDialogButtonBox(QDialogButtonBox::Save | QDialogButtonBox::Cancel);
+
+    formLayout->addWidget(dialogButtonBox);
+}
+
+void MainWindow::SetAddMediumVisible(bool visible)
+{
+    QWidget *mediumWidget = this->findChild<QWidget *>("addMediumWidget");
+    mediumWidget->setVisible(visible);
+}
+
+void MainWindow::SetMediaListVisible(bool visible)
+{
+    QWidget *mediaListWidget = this->findChild<QWidget *>("mediaListWidget");
+    mediaListWidget->setVisible(visible);
+    if (visible)
     {
-        Book *book = dynamic_cast<Book *>(medium);
-        QFormLayout *formLayout = new QFormLayout();
-        QPushButton *backButton = new QPushButton("◀ Back");
-        formLayout->addRow(backButton, (QWidget *)nullptr);
-        formLayout->addRow("Medium", new QLabel("Book"));
-        QLineEdit *titleEdit = new QLineEdit(book->getTitle());
-        formLayout->addRow("Title", titleEdit);
-        QLineEdit *yearEdit = new QLineEdit(QString::number(book->getYear()));
-        formLayout->addRow("Year", yearEdit);
-
-        QDialogButtonBox *dialogButtonBox = new QDialogButtonBox(QDialogButtonBox::Save | QDialogButtonBox::Cancel);
-
-        QObject::connect(dialogButtonBox, &QDialogButtonBox::accepted, [=]()
-                         {
-                            book->setTitle(titleEdit->text());
-                            book->setYear(yearEdit->text().toInt());
-                            mediumStore.update(book->getId(), book);
-                            gridLayout->removeItem(formLayout);
-                            TableWidgetDisplay(gridLayout); });
-        QObject::connect(dialogButtonBox, &QDialogButtonBox::rejected, [=]()
-                         {  gridLayout->removeItem(formLayout);
-                            TableWidgetDisplay(gridLayout); });
-
-        formLayout->addWidget(dialogButtonBox);
-
-        QObject::connect(backButton, &QPushButton::clicked, [=]()
-                         {  gridLayout->removeItem(formLayout);
-                            TableWidgetDisplay(gridLayout); });
-
-        gridLayout->addLayout(formLayout, 1, 0);
-    }
-    else
-    {
-        throw std::invalid_argument("Unknown medium type");
+        LoadMedia();
     }
 }
 
-void MainWindow::TableWidgetDisplay(QGridLayout *gridLayout)
+void MainWindow::AddMedium()
 {
-    QTableWidget *table = new QTableWidget(this);
+    SetMediaListVisible(false);
+    SetAddMediumVisible(true);
+    QObject::disconnect(this->dialogButtonBox, &QDialogButtonBox::accepted, nullptr, nullptr);
+    QObject::disconnect(this->dialogButtonBox, &QDialogButtonBox::rejected, nullptr, nullptr);
+    QObject::connect(this->dialogButtonBox, &QDialogButtonBox::accepted, [=]()
+                     {
+                            QComboBox *mediumType = this->findChild<QComboBox *>("mediumComboBox");
+                         QString text = mediumType->currentText();
+                            if (mediumType->currentText() == "Book")
+                            {
+                                QLineEdit *titleEdit = this->findChild<QLineEdit *>("titleLineEdit");
+                                QLineEdit *creatorEdit = this->findChild<QLineEdit *>("creatorLineEdit");
+                                QLineEdit *yearEdit = this->findChild<QLineEdit *>("yearLineEdit");
+                                Book *book = new Book(titleEdit->text(),creatorEdit->text(), yearEdit->text().toInt());
+                                mediumStore.add(book);
+                                SetAddMediumVisible(false);
+                                SetMediaListVisible(true);
+                            } });
+    QObject::connect(this->dialogButtonBox, &QDialogButtonBox::rejected, [=]()
+                     {
+                         SetAddMediumVisible(false);
+                         SetMediaListVisible(true); });
+}
 
-    table->move(0, 0);
+void MainWindow::LoadMedia()
+{
+    QTableWidget *table = this->findChild<QTableWidget *>("mediaTable");
+    table->clear();
     table->setColumnWidth(0, 200);
     table->setColumnWidth(1, 50);
     table->setColumnCount(4);
@@ -85,9 +108,6 @@ void MainWindow::TableWidgetDisplay(QGridLayout *gridLayout)
     table->setSelectionMode(QAbstractItemView::SingleSelection);
     table->setShowGrid(false);
     table->verticalHeader()->hide();
-
-    Book book1("The Lord of the Rings", "J. R. R. Tolkien", 1954);
-    Book book2("The Hobbit", "J. R. R. Tolkien", 1937);
 
     List<Medium> *media = mediumStore.load();
 
@@ -116,12 +136,7 @@ void MainWindow::TableWidgetDisplay(QGridLayout *gridLayout)
 
         QPushButton *editButton = new QPushButton("Edit");
         table->setCellWidget(row, 3, editButton);
-        QObject::connect(editButton, &QPushButton::clicked, [=]()
-                         { 
-                            table->setVisible(false);
-                            EditWidgetDisplay(pItem, gridLayout);
-                            mediumStore.save(media); });
+        QObject::connect(editButton, &QPushButton::clicked, [=]() {});
         row++;
     }
-    gridLayout->addWidget(table);
 }

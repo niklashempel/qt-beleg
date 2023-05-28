@@ -21,6 +21,7 @@ public:
     void save(List<T> *data) const;
     List<T> *load();
     void update(QUuid id, T *item);
+    void add(T *item);
 };
 
 template <class T>
@@ -96,6 +97,24 @@ inline void Datastore<T>::update(QUuid id, T *item)
     }
     delete lines;
     delete writeFile;
+}
+
+template <class T>
+inline void Datastore<T>::add(T *item)
+{
+    QFile file(this->file);
+
+    if (file.open(QIODevice::Append | QIODevice::Text))
+    {
+        QTextStream stream(&file);
+        stream << item->print() << "\n";
+        stream.flush();
+        file.close();
+    }
+    else
+    {
+        std::cout << "Could not open file" << std::endl;
+    }
 }
 
 template <class T>
