@@ -1,5 +1,7 @@
 #include "medium.hpp"
 #include "book.hpp"
+#include "cd.hpp"
+#include "dvd.hpp"
 #include <QStringList>
 
 Medium *Medium::parse(QString line)
@@ -9,10 +11,10 @@ Medium *Medium::parse(QString line)
     {
     case MediumType::BOOK:
         return new Book(QUuid::fromString(parts[0]), parts[2], parts[3], parts[4].toInt());
-        break;
-
     case MediumType::CD:
+        return new Cd(QUuid::fromString(parts[0]), parts[2], parts[3], parts[4].toInt());
     case MediumType::DVD:
+        return new Dvd(QUuid::fromString(parts[0]), parts[2], parts[3], parts[4].toInt());
     default:
         return NULL;
     }

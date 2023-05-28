@@ -15,6 +15,8 @@
 #include <QGridLayout>
 #include <QDialogButtonBox>
 #include <QComboBox>
+#include "cd.hpp"
+#include "dvd.hpp"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow), mediumStore("media.txt")
@@ -42,6 +44,23 @@ void MainWindow::InitializeButtons()
     QObject::connect(backButton, &QPushButton::clicked, [=]()
                      { SetAddMediumVisible(false);
                        SetMediaListVisible(true); });
+
+    QLabel *creatorLabel = this->findChild<QLabel *>("creatorLabel");
+    QComboBox *mediumType = this->findChild<QComboBox *>("mediumComboBox");
+    QObject::connect(mediumType, &QComboBox::currentTextChanged, [=]()
+                     {
+                         QString text = mediumType->currentText();
+                         if (text == "Book")
+                         {
+                             creatorLabel->setText("Author");
+                         }
+                         else if(text == "CD")
+                         {
+                             creatorLabel->setText("Artist");
+                         }else if(text == "DVD")
+                         {
+                             creatorLabel->setText("Director");
+                         } });
 }
 
 void MainWindow::InitializeEditMedium()
@@ -78,13 +97,36 @@ void MainWindow::AddMedium()
                      {
                             QComboBox *mediumType = this->findChild<QComboBox *>("mediumComboBox");
                          QString text = mediumType->currentText();
-                            if (mediumType->currentText() == "Book")
+                            if (text == "Book")
                             {
                                 QLineEdit *titleEdit = this->findChild<QLineEdit *>("titleLineEdit");
                                 QLineEdit *creatorEdit = this->findChild<QLineEdit *>("creatorLineEdit");
                                 QLineEdit *yearEdit = this->findChild<QLineEdit *>("yearLineEdit");
                                 Book *book = new Book(titleEdit->text(),creatorEdit->text(), yearEdit->text().toInt());
                                 mediumStore.add(book);
+                                delete book;
+                                SetAddMediumVisible(false);
+                                SetMediaListVisible(true);
+                            }
+                            else if (text == "CD")
+                            {
+                                QLineEdit *titleEdit = this->findChild<QLineEdit *>("titleLineEdit");
+                                QLineEdit *creatorEdit = this->findChild<QLineEdit *>("creatorLineEdit");
+                                QLineEdit *yearEdit = this->findChild<QLineEdit *>("yearLineEdit");
+                                Cd *cd = new Cd(titleEdit->text(),creatorEdit->text(), yearEdit->text().toInt());
+                                mediumStore.add(cd);
+                                delete cd;
+                                SetAddMediumVisible(false);
+                                SetMediaListVisible(true);
+                            }
+                            else if(text == "DVD")
+                            {
+                                QLineEdit *titleEdit = this->findChild<QLineEdit *>("titleLineEdit");
+                                QLineEdit *creatorEdit = this->findChild<QLineEdit *>("creatorLineEdit");
+                                QLineEdit *yearEdit = this->findChild<QLineEdit *>("yearLineEdit");
+                                Dvd *dvd = new Dvd(titleEdit->text(),creatorEdit->text(), yearEdit->text().toInt());
+                                mediumStore.add(dvd);
+                                delete dvd;
                                 SetAddMediumVisible(false);
                                 SetMediaListVisible(true);
                             } });

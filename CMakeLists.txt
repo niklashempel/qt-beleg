@@ -22,6 +22,8 @@ set(PROJECT_SOURCES
     medium.hpp
     medium.cpp
     book.hpp
+    cd.hpp
+    dvd.hpp
     list.hpp
     datastore.hpp
     main.cpp
