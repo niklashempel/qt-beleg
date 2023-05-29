@@ -19,14 +19,17 @@
 #include "dvd.hpp"
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent), ui(new Ui::MainWindow), mediumStore("media.txt")
+    : QMainWindow(parent), ui(new Ui::MainWindow), mediumStore("media.txt"), personStore("people.txt")
 {
     ui->setupUi(this);
 
     InitializeButtons();
     InitializeEditMedium();
+    InitializeEditPerson();
     SetAddMediumVisible(false);
     SetMediaListVisible(true);
+    SetAddPersonVisible(false);
+    SetPersonListVisible(true);
 }
 
 MainWindow::~MainWindow()
@@ -61,14 +64,31 @@ void MainWindow::InitializeButtons()
                          {
                              creatorLabel->setText("Director");
                          } });
+
+    QPushButton *addPersonButton = this->findChild<QPushButton *>("addPersonButton");
+    QObject::connect(addPersonButton, &QPushButton::clicked, [=]()
+                     { AddPerson(); });
+
+    QPushButton *peopleBackButton = this->findChild<QPushButton *>("peopleBackButton");
+    QObject::connect(peopleBackButton, &QPushButton::clicked, [=]()
+                     { SetAddPersonVisible(false);
+                       SetPersonListVisible(true); });
 }
 
 void MainWindow::InitializeEditMedium()
 {
     QFormLayout *formLayout = this->findChild<QFormLayout *>("addMediumLayout");
-    this->dialogButtonBox = new QDialogButtonBox(QDialogButtonBox::Save | QDialogButtonBox::Cancel);
+    this->mediaDialogButtonBox = new QDialogButtonBox(QDialogButtonBox::Save | QDialogButtonBox::Cancel);
 
-    formLayout->addWidget(dialogButtonBox);
+    formLayout->addWidget(mediaDialogButtonBox);
+}
+
+void MainWindow::InitializeEditPerson()
+{
+    QFormLayout *formLayout = this->findChild<QFormLayout *>("addPersonLayout");
+    this->peopleDialogButtonBox = new QDialogButtonBox(QDialogButtonBox::Save | QDialogButtonBox::Cancel);
+
+    formLayout->addWidget(peopleDialogButtonBox);
 }
 
 void MainWindow::SetAddMediumVisible(bool visible)
@@ -87,13 +107,29 @@ void MainWindow::SetMediaListVisible(bool visible)
     }
 }
 
+void MainWindow::SetAddPersonVisible(bool visible)
+{
+    QWidget *personWidget = this->findChild<QWidget *>("addPersonWidget");
+    personWidget->setVisible(visible);
+}
+
+void MainWindow::SetPersonListVisible(bool visible)
+{
+    QWidget *peopleListWidget = this->findChild<QWidget *>("peopleListWidget");
+    peopleListWidget->setVisible(visible);
+    if (visible)
+    {
+        LoadPeople();
+    }
+}
+
 void MainWindow::AddMedium()
 {
     SetMediaListVisible(false);
     SetAddMediumVisible(true);
-    QObject::disconnect(this->dialogButtonBox, &QDialogButtonBox::accepted, nullptr, nullptr);
-    QObject::disconnect(this->dialogButtonBox, &QDialogButtonBox::rejected, nullptr, nullptr);
-    QObject::connect(this->dialogButtonBox, &QDialogButtonBox::accepted, [=]()
+    QObject::disconnect(this->mediaDialogButtonBox, &QDialogButtonBox::accepted, nullptr, nullptr);
+    QObject::disconnect(this->mediaDialogButtonBox, &QDialogButtonBox::rejected, nullptr, nullptr);
+    QObject::connect(this->mediaDialogButtonBox, &QDialogButtonBox::accepted, [=]()
                      {
                             QComboBox *mediumType = this->findChild<QComboBox *>("mediumComboBox");
                          QString text = mediumType->currentText();
@@ -130,25 +166,38 @@ void MainWindow::AddMedium()
                                 SetAddMediumVisible(false);
                                 SetMediaListVisible(true);
                             } });
-    QObject::connect(this->dialogButtonBox, &QDialogButtonBox::rejected, [=]()
+    QObject::connect(this->mediaDialogButtonBox, &QDialogButtonBox::rejected, [=]()
                      {
                          SetAddMediumVisible(false);
                          SetMediaListVisible(true); });
+}
+
+void MainWindow::AddPerson()
+{
+    SetPersonListVisible(false);
+    SetAddPersonVisible(true);
+    QObject::disconnect(this->peopleDialogButtonBox, &QDialogButtonBox::accepted, nullptr, nullptr);
+    QObject::disconnect(this->peopleDialogButtonBox, &QDialogButtonBox::rejected, nullptr, nullptr);
+    QObject::connect(this->peopleDialogButtonBox, &QDialogButtonBox::accepted, [=]()
+                     {
+        QLineEdit *firstName = this->findChild<QLineEdit *>("firstNameLineEdit");
+        QLineEdit *lastName = this->findChild<QLineEdit *>("lastNameLineEdit");
+        Person *person = new Person(firstName->text(), lastName->text());
+        personStore.add(person);
+        delete person;
+        SetAddPersonVisible(false);
+        SetPersonListVisible(true); });
 }
 
 void MainWindow::LoadMedia()
 {
     QTableWidget *table = this->findChild<QTableWidget *>("mediaTable");
     table->clear();
-    table->setColumnWidth(0, 200);
-    table->setColumnWidth(1, 50);
     table->setColumnCount(4);
     table->setHorizontalHeaderItem(0, new QTableWidgetItem("Title"));
     table->setHorizontalHeaderItem(1, new QTableWidgetItem("Year"));
-    table->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    table->setSelectionBehavior(QAbstractItemView::SelectRows);
-    table->setSelectionMode(QAbstractItemView::SingleSelection);
-    table->setShowGrid(false);
+    table->setHorizontalHeaderItem(2, new QTableWidgetItem(""));
+    table->setHorizontalHeaderItem(3, new QTableWidgetItem(""));
     table->verticalHeader()->hide();
 
     List<Medium> *media = mediumStore.load();
@@ -175,6 +224,48 @@ void MainWindow::LoadMedia()
                              table->removeRow(row);
                              media->remove(pItem);
                              mediumStore.save(media); });
+
+        QPushButton *editButton = new QPushButton("Edit");
+        table->setCellWidget(row, 3, editButton);
+        QObject::connect(editButton, &QPushButton::clicked, [=]() {});
+        row++;
+    }
+}
+
+void MainWindow::LoadPeople()
+{
+    QTableWidget *table = this->findChild<QTableWidget *>("peopleTable");
+    table->clear();
+    table->setHorizontalHeaderItem(0, new QTableWidgetItem("First name"));
+    table->setHorizontalHeaderItem(1, new QTableWidgetItem("Last name"));
+    table->setHorizontalHeaderItem(2, new QTableWidgetItem(""));
+    table->setHorizontalHeaderItem(3, new QTableWidgetItem(""));
+    table->verticalHeader()->hide();
+
+    List<Person> *people = personStore.load();
+
+    int row = 0;
+
+    for (auto &item : *people)
+    {
+        table->insertRow(row);
+
+        QTableWidgetItem *firstName = new QTableWidgetItem(item.getFirstName());
+        table->setItem(row, 0, firstName);
+
+        QTableWidgetItem *lastName = new QTableWidgetItem(item.getLastName());
+        table->setItem(row, 1, lastName);
+
+        QPushButton *deleteButton = new QPushButton("Delete");
+        table->setCellWidget(row, 2, deleteButton);
+
+        Person *pItem = &item;
+        QObject::connect(deleteButton, &QPushButton::clicked, [=]()
+                         {
+                             int row = table->currentRow();
+                             table->removeRow(row);
+                             people->remove(pItem);
+                             personStore.save(people); });
 
         QPushButton *editButton = new QPushButton("Edit");
         table->setCellWidget(row, 3, editButton);

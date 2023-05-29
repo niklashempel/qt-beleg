@@ -37,6 +37,10 @@ inline List<T> *Datastore<T>::load()
         while (!stream.atEnd())
         {
             QString line = stream.readLine();
+            if (line == "")
+            {
+                continue;
+            }
             data->add(T::parse(line));
         }
         file.close();
@@ -68,6 +72,11 @@ inline void Datastore<T>::update(QUuid id, T *item)
             }
             else
             {
+                if (line->isEmpty())
+                {
+                    continue;
+                }
+                
                 lines->add(line);
             }
         }

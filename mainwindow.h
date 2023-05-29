@@ -26,13 +26,20 @@ public:
 private:
     Ui::MainWindow *ui;
     void LoadMedia();
+    void LoadPeople();
     void AddMedium();
+    void AddPerson();
     void InitializeButtons();
     void SetAddMediumVisible(bool);
     void SetMediaListVisible(bool);
+    void SetAddPersonVisible(bool);
+    void SetPersonListVisible(bool);
     void InitializeEditMedium();
+    void InitializeEditPerson();
     Datastore<Medium> mediumStore;
-    QDialogButtonBox *dialogButtonBox;
+    Datastore<Person> personStore;
+    QDialogButtonBox *mediaDialogButtonBox;
+    QDialogButtonBox *peopleDialogButtonBox;
 };
 
 #endif // MAINWINDOW_H
