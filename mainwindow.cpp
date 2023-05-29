@@ -94,6 +94,14 @@ void MainWindow::AddMedium()
 {
     SetMediaListVisible(false);
     SetAddMediumVisible(true);
+    QLineEdit *title = this->findChild<QLineEdit *>("titleLineEdit");
+    QLineEdit *creator = this->findChild<QLineEdit *>("creatorLineEdit");
+    QLineEdit *year = this->findChild<QLineEdit *>("yearLineEdit");
+    QComboBox *ownerComboBox = this->findChild<QComboBox *>("ownerComboBox");
+    title->setText("");
+    creator->setText("");
+    year->setText("");
+    ownerComboBox->setCurrentIndex(0);
     QObject::connect(this->mediaDialogButtonBox, &QDialogButtonBox::accepted, [=]()
                      {
                          Medium *medium;
@@ -136,6 +144,10 @@ void MainWindow::AddPerson()
 {
     SetPersonListVisible(false);
     SetAddPersonVisible(true);
+    QLineEdit *firstName = this->findChild<QLineEdit *>("firstNameLineEdit");
+    QLineEdit *lastName = this->findChild<QLineEdit *>("lastNameLineEdit");
+    firstName->setText("");
+    lastName->setText("");
     QObject::connect(this->peopleDialogButtonBox, &QDialogButtonBox::accepted, [=]()
                      {
         QLineEdit *firstName = this->findChild<QLineEdit *>("firstNameLineEdit");
@@ -221,13 +233,14 @@ void MainWindow::EditMedium(Medium *medium)
 void MainWindow::InitializeUi()
 {
     QTableWidget *mediaTable = this->findChild<QTableWidget *>("mediaTable");
-    mediaTable->setColumnCount(6);
+    mediaTable->setColumnCount(7);
     mediaTable->setHorizontalHeaderItem(0, new QTableWidgetItem("Type"));
     mediaTable->setHorizontalHeaderItem(1, new QTableWidgetItem("Title"));
     mediaTable->setHorizontalHeaderItem(2, new QTableWidgetItem("Creator"));
     mediaTable->setHorizontalHeaderItem(3, new QTableWidgetItem("Year"));
-    mediaTable->setHorizontalHeaderItem(4, new QTableWidgetItem(""));
+    mediaTable->setHorizontalHeaderItem(4, new QTableWidgetItem("Owner"));
     mediaTable->setHorizontalHeaderItem(5, new QTableWidgetItem(""));
+    mediaTable->setHorizontalHeaderItem(6, new QTableWidgetItem(""));
     mediaTable->verticalHeader()->hide();
 
     QTableWidget *peopleTable = this->findChild<QTableWidget *>("peopleTable");
@@ -306,6 +319,7 @@ void MainWindow::LoadMedia()
         if (!medium.getOwnerId().isNull())
         {
             Person owner = peopleMap[medium.getOwnerId()];
+            medium.setOwner(&owner);
         }
 
         QTableWidgetItem *type = new QTableWidgetItem(medium.getType());
@@ -320,8 +334,11 @@ void MainWindow::LoadMedia()
         QTableWidgetItem *year = new QTableWidgetItem(QString::number(medium.getYear()));
         table->setItem(row, 3, year);
 
+        QTableWidgetItem *owner = new QTableWidgetItem(medium.getOwner() != nullptr ? medium.getOwner()->toString() : "");
+        table->setItem(row, 4, owner);
+
         QPushButton *deleteButton = new QPushButton("Delete");
-        table->setCellWidget(row, 4, deleteButton);
+        table->setCellWidget(row, 5, deleteButton);
 
         Medium *pItem = &medium;
         QObject::connect(deleteButton, &QPushButton::clicked, [=]()
@@ -332,7 +349,7 @@ void MainWindow::LoadMedia()
                              mediumStore.save(media); });
 
         QPushButton *editButton = new QPushButton("Edit");
-        table->setCellWidget(row, 5, editButton);
+        table->setCellWidget(row, 6, editButton);
         QObject::connect(editButton, &QPushButton::clicked, [=]()
                          { EditMedium(pItem); });
         row++;

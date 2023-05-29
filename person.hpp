@@ -23,6 +23,7 @@ public:
     void setFirstName(QString firstName) { this->firstName = firstName; }
     void setLastName(QString lastName) { this->lastName = lastName; };
     QString print() const { return this->id.toString() + "," + this->firstName + "," + this->lastName; };
+    QString toString() const { return this->firstName + " " + this->lastName; };
     static Person *parse(QString line);
 };
 
