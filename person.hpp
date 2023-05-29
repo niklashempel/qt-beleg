@@ -19,6 +19,7 @@ public:
     Person() : firstName(""), lastName(""){};
     QString getFirstName() const { return this->firstName; }
     QString getLastName() const { return this->lastName; }
+    QUuid getId() const { return this->id; };
     void setFirstName(QString firstName) { this->firstName = firstName; }
     void setLastName(QString lastName) { this->lastName = lastName; };
     QString print() const { return this->id.toString() + "," + this->firstName + "," + this->lastName; };

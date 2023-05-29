@@ -95,6 +95,11 @@ void MainWindow::SetAddMediumVisible(bool visible)
 {
     QWidget *mediumWidget = this->findChild<QWidget *>("addMediumWidget");
     mediumWidget->setVisible(visible);
+    if (visible)
+    {
+        QObject::disconnect(this->mediaDialogButtonBox, &QDialogButtonBox::accepted, nullptr, nullptr);
+        QObject::disconnect(this->mediaDialogButtonBox, &QDialogButtonBox::rejected, nullptr, nullptr);
+    }
 }
 
 void MainWindow::SetMediaListVisible(bool visible)
@@ -111,6 +116,11 @@ void MainWindow::SetAddPersonVisible(bool visible)
 {
     QWidget *personWidget = this->findChild<QWidget *>("addPersonWidget");
     personWidget->setVisible(visible);
+    if (visible)
+    {
+        QObject::disconnect(this->peopleDialogButtonBox, &QDialogButtonBox::accepted, nullptr, nullptr);
+        QObject::disconnect(this->peopleDialogButtonBox, &QDialogButtonBox::rejected, nullptr, nullptr);
+    }
 }
 
 void MainWindow::SetPersonListVisible(bool visible)
@@ -127,8 +137,6 @@ void MainWindow::AddMedium()
 {
     SetMediaListVisible(false);
     SetAddMediumVisible(true);
-    QObject::disconnect(this->mediaDialogButtonBox, &QDialogButtonBox::accepted, nullptr, nullptr);
-    QObject::disconnect(this->mediaDialogButtonBox, &QDialogButtonBox::rejected, nullptr, nullptr);
     QObject::connect(this->mediaDialogButtonBox, &QDialogButtonBox::accepted, [=]()
                      {
                             QComboBox *mediumType = this->findChild<QComboBox *>("mediumComboBox");
@@ -176,8 +184,6 @@ void MainWindow::AddPerson()
 {
     SetPersonListVisible(false);
     SetAddPersonVisible(true);
-    QObject::disconnect(this->peopleDialogButtonBox, &QDialogButtonBox::accepted, nullptr, nullptr);
-    QObject::disconnect(this->peopleDialogButtonBox, &QDialogButtonBox::rejected, nullptr, nullptr);
     QObject::connect(this->peopleDialogButtonBox, &QDialogButtonBox::accepted, [=]()
                      {
         QLineEdit *firstName = this->findChild<QLineEdit *>("firstNameLineEdit");
@@ -189,15 +195,63 @@ void MainWindow::AddPerson()
         SetPersonListVisible(true); });
 }
 
+void MainWindow::EditPerson(Person *person)
+{
+    SetPersonListVisible(false);
+    SetAddPersonVisible(true);
+    QLineEdit *firstName = this->findChild<QLineEdit *>("firstNameLineEdit");
+    QLineEdit *lastName = this->findChild<QLineEdit *>("lastNameLineEdit");
+    firstName->setText(person->getFirstName());
+    lastName->setText(person->getLastName());
+    QObject::connect(this->peopleDialogButtonBox, &QDialogButtonBox::accepted, [=]()
+                     {
+        person->setFirstName(firstName->text());
+        person->setLastName(lastName->text());
+        personStore.update(person->getId(), person);
+        SetAddPersonVisible(false);
+        SetPersonListVisible(true); });
+
+    QObject::connect(this->peopleDialogButtonBox, &QDialogButtonBox::rejected, [=]()
+                     {
+        SetAddPersonVisible(false);
+        SetPersonListVisible(true); });
+}
+
+void MainWindow::EditMedium(Medium *medium)
+{
+    SetMediaListVisible(false);
+    SetAddMediumVisible(true);
+    QLineEdit *title = this->findChild<QLineEdit *>("titleLineEdit");
+    QLineEdit *creator = this->findChild<QLineEdit *>("creatorLineEdit");
+    QLineEdit *year = this->findChild<QLineEdit *>("yearLineEdit");
+    title->setText(medium->getTitle());
+    creator->setText(medium->getCreator());
+    year->setText(QString::number(medium->getYear()));
+    QObject::connect(this->mediaDialogButtonBox, &QDialogButtonBox::accepted, [=]()
+                     {
+        medium->setTitle(title->text());
+        medium->setCreator(creator->text());
+        medium->setYear(year->text().toInt());
+        mediumStore.update(medium->getId(), medium);
+        SetAddMediumVisible(false);
+        SetMediaListVisible(true); });
+
+    QObject::connect(this->mediaDialogButtonBox, &QDialogButtonBox::rejected, [=]()
+                     {
+        SetAddMediumVisible(false);
+        SetMediaListVisible(true); });
+}
+
 void MainWindow::LoadMedia()
 {
     QTableWidget *table = this->findChild<QTableWidget *>("mediaTable");
     table->clear();
-    table->setColumnCount(4);
+    table->setColumnCount(5);
     table->setHorizontalHeaderItem(0, new QTableWidgetItem("Title"));
-    table->setHorizontalHeaderItem(1, new QTableWidgetItem("Year"));
-    table->setHorizontalHeaderItem(2, new QTableWidgetItem(""));
+    table->setHorizontalHeaderItem(1, new QTableWidgetItem("Creator"));
+    table->setHorizontalHeaderItem(2, new QTableWidgetItem("Year"));
     table->setHorizontalHeaderItem(3, new QTableWidgetItem(""));
+    table->setHorizontalHeaderItem(4, new QTableWidgetItem(""));
     table->verticalHeader()->hide();
 
     List<Medium> *media = mediumStore.load();
@@ -211,11 +265,14 @@ void MainWindow::LoadMedia()
         QTableWidgetItem *title = new QTableWidgetItem(item.getTitle());
         table->setItem(row, 0, title);
 
+        QTableWidgetItem *creator = new QTableWidgetItem(item.getCreator());
+        table->setItem(row, 1, creator);
+
         QTableWidgetItem *year = new QTableWidgetItem(QString::number(item.getYear()));
-        table->setItem(row, 1, year);
+        table->setItem(row, 2, year);
 
         QPushButton *deleteButton = new QPushButton("Delete");
-        table->setCellWidget(row, 2, deleteButton);
+        table->setCellWidget(row, 3, deleteButton);
 
         Medium *pItem = &item;
         QObject::connect(deleteButton, &QPushButton::clicked, [=]()
@@ -226,8 +283,9 @@ void MainWindow::LoadMedia()
                              mediumStore.save(media); });
 
         QPushButton *editButton = new QPushButton("Edit");
-        table->setCellWidget(row, 3, editButton);
-        QObject::connect(editButton, &QPushButton::clicked, [=]() {});
+        table->setCellWidget(row, 4, editButton);
+        QObject::connect(editButton, &QPushButton::clicked, [=]()
+                         { EditMedium(pItem); });
         row++;
     }
 }
@@ -269,7 +327,8 @@ void MainWindow::LoadPeople()
 
         QPushButton *editButton = new QPushButton("Edit");
         table->setCellWidget(row, 3, editButton);
-        QObject::connect(editButton, &QPushButton::clicked, [=]() {});
+        QObject::connect(editButton, &QPushButton::clicked, [=]()
+                         { EditPerson(pItem); });
         row++;
     }
 }

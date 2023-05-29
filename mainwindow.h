@@ -5,6 +5,7 @@
 #include <QMainWindow>
 #include "datastore.hpp"
 #include "medium.hpp"
+#include "person.hpp"
 #include <QDialogButtonBox>
 
 QT_BEGIN_NAMESPACE
@@ -29,6 +30,8 @@ private:
     void LoadPeople();
     void AddMedium();
     void AddPerson();
+    void EditPerson(Person *person);
+    void EditMedium(Medium *medium);
     void InitializeButtons();
     void SetAddMediumVisible(bool);
     void SetMediaListVisible(bool);
