@@ -32,13 +32,11 @@ private:
     void AddPerson();
     void EditPerson(Person *person);
     void EditMedium(Medium *medium);
-    void InitializeButtons();
+    void InitializeUi();
     void SetAddMediumVisible(bool);
     void SetMediaListVisible(bool);
     void SetAddPersonVisible(bool);
     void SetPersonListVisible(bool);
-    void InitializeEditMedium();
-    void InitializeEditPerson();
     Datastore<Medium> mediumStore;
     Datastore<Person> personStore;
     QDialogButtonBox *mediaDialogButtonBox;

@@ -22,6 +22,7 @@ public:
     List<T> *load();
     void update(QUuid id, T *item);
     void add(T *item);
+    T *find(QUuid id);
 };
 
 template <class T>
@@ -76,7 +77,7 @@ inline void Datastore<T>::update(QUuid id, T *item)
                 {
                     continue;
                 }
-                
+
                 lines->add(line);
             }
         }
@@ -124,6 +125,31 @@ inline void Datastore<T>::add(T *item)
     {
         std::cout << "Could not open file" << std::endl;
     }
+}
+
+template <class T>
+inline T *Datastore<T>::find(QUuid id)
+{
+    QFile file(this->file);
+
+    if (file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        QTextStream stream(&file);
+        while (!stream.atEnd())
+        {
+            QString line = stream.readLine();
+            if (line.startsWith(id.toString()))
+            {
+                return T::parse(line);
+            }
+        }
+        file.close();
+    }
+    else
+    {
+        std::cout << "Could not open file" << std::endl;
+    }
+    return nullptr;
 }
 
 template <class T>

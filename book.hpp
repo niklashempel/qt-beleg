@@ -6,9 +6,17 @@
 class Book : public Medium
 {
 public:
-    Book(QUuid id, QString title, QString creator, int year) : Medium(id, title, creator, year){};
-    Book(QString title, QString creator, int year) : Medium(title, creator, year){};
-    QString print() const { return this->getId().toString() + "," + QString::number(MediumType::BOOK) + "," + this->getTitle() + "," + this->getCreator() + "," + QString::number(this->getYear()); }
+    Book(QUuid id, QString title, QString creator, int year, QUuid ownerId) : Medium(id, title, creator, year, ownerId){};
+    Book(QString title, QString creator, int year, QUuid ownerId) : Medium(title, creator, year, ownerId){};
+    QString print() const
+    {
+        return this->getId().toString() + "," +
+               QString::number(MediumType::BOOK) + "," +
+               this->getTitle() + "," +
+               this->getCreator() + "," +
+               QString::number(this->getYear()) + "," + this->getOwnerId().toString();
+    };
+    QString getType() const { return "Book"; };
 };
 
 #endif // BOOK_HPP
