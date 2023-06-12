@@ -16,21 +16,31 @@ find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
-set(PROJECT_SOURCES
-    person.hpp
-    person.cpp
-    medium.hpp
-    medium.cpp
-    book.hpp
-    cd.hpp
-    dvd.hpp
-    list.hpp
-    datastore.hpp
-    main.cpp
-    mainwindow.cpp
-    mainwindow.h
-    mainwindow.ui
+add_subdirectory(src)
+
+target_link_libraries(qt-beleg PRIVATE src)
+
+target_include_directories(
+    qt-beleg
+    PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
+
+# set(PROJECT_SOURCES
+#     person.hpp
+#     person.cpp
+#     medium.hpp
+#     medium.cpp
+#     book.hpp
+#     cd.hpp
+#     dvd.hpp
+#     list.hpp
+#     datastore.hpp
+#     main.cpp
+#     mainwindow.cpp
+#     mainwindow.h
+#     mainwindow.ui
+# )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(qt-beleg
