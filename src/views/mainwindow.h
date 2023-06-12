@@ -3,9 +3,9 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "datastore.hpp"
-#include "models/medium.hpp"
-#include "models/person.hpp"
+#include "../datastore.hpp"
+#include "../models/medium.hpp"
+#include "../models/person.hpp"
 #include <QDialogButtonBox>
 
 QT_BEGIN_NAMESPACE

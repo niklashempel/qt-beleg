@@ -15,18 +15,15 @@ find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
 add_library(
-    mylib
-    list.hpp
-    datastore.hpp
-    main.cpp
+    views
+    mainwindow.cpp
+    mainwindow.h
+    mainwindow.ui
 )
 
-add_subdirectory(models)
-add_subdirectory(views)
+target_link_libraries(views PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
 
-target_link_libraries(mylib PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
-
-set_target_properties(mylib PROPERTIES
+set_target_properties(views PROPERTIES
 
     MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com
 

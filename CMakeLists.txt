@@ -29,7 +29,7 @@ else()
     )
 endif()
 
-target_link_libraries(qt-beleg PUBLIC mylib models)
+target_link_libraries(qt-beleg PUBLIC mylib views models)
 
 install(TARGETS qt-beleg
 

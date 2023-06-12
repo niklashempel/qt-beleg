@@ -2,11 +2,11 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
 #include <QTableWidget>
-#include "datastore.hpp"
-#include "models/medium.hpp"
-#include "models/book.hpp"
-#include "models/cd.hpp"
-#include "models/dvd.hpp"
+#include "../datastore.hpp"
+#include "../models/medium.hpp"
+#include "../models/book.hpp"
+#include "../models/cd.hpp"
+#include "../models/dvd.hpp"
 #include <QTableWidget>
 #include <QStringList>
 #include <QHeaderView>
