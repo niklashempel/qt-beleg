@@ -20,7 +20,9 @@
 #include <map>
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent), ui(new Ui::MainWindow), mediumStore("media.txt"), personStore("people.txt")
+    : QMainWindow(parent), ui(new Ui::MainWindow),
+      mediumStore(QCoreApplication::applicationDirPath() + "/media.txt"),
+      personStore(QCoreApplication::applicationDirPath() + "/people.txt")
 {
     ui->setupUi(this);
 
