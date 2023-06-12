@@ -17,53 +17,19 @@ find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
 add_subdirectory(src)
-target_link_libraries(qt-beleg PRIVATE mylib)
-
-# set(PROJECT_SOURCES
-#     person.hpp
-#     person.cpp
-#     medium.hpp
-#     medium.cpp
-#     book.hpp
-#     cd.hpp
-#     dvd.hpp
-#     list.hpp
-#     datastore.hpp
-#     main.cpp
-#     mainwindow.cpp
-#     mainwindow.h
-#     mainwindow.ui
-# )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(qt-beleg
 
         MANUAL_FINALIZATION
-
-        # ${PROJECT_SOURCES}
     )
 
 else()
     add_executable(qt-beleg
-
-        # ${PROJECT_SOURCES}
     )
 endif()
 
-target_link_libraries(qt-beleg PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
-
-set_target_properties(qt-beleg PROPERTIES
-
-    MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com
-
-    MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
-
-    MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
-
-    MACOSX_BUNDLE TRUE
-
-    WIN32_EXECUTABLE TRUE
-)
+target_link_libraries(qt-beleg PUBLIC mylib)
 
 install(TARGETS qt-beleg
 

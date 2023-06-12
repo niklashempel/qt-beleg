@@ -31,21 +31,6 @@ add_library(
     mainwindow.ui
 )
 
-if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-    qt_add_executable(mylib
-
-        MANUAL_FINALIZATION
-
-        ${PROJECT_SOURCES}
-    )
-
-else()
-    add_executable(mylib
-
-        ${PROJECT_SOURCES}
-    )
-endif()
-
 target_link_libraries(mylib PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
 
 set_target_properties(mylib PROPERTIES
@@ -60,13 +45,3 @@ set_target_properties(mylib PROPERTIES
 
     WIN32_EXECUTABLE TRUE
 )
-
-install(TARGETS mylib
-
-    BUNDLE DESTINATION .
-
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
-
-if(QT_VERSION_MAJOR EQUAL 6)
-    qt_finalize_executable(mylib)
-endif()
