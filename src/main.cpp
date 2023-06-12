@@ -1,7 +1,6 @@
 #include "views/mainwindow.h"
 #include <QApplication>
 #include <QString>
-#include "list.hpp"
 
 using namespace std;
 

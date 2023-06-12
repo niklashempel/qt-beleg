@@ -3,7 +3,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "../datastore.hpp"
+#include "../lib/datastore.hpp"
 #include "../models/medium.hpp"
 #include "../models/person.hpp"
 #include <QDialogButtonBox>

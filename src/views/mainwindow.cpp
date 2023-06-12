@@ -2,7 +2,7 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
 #include <QTableWidget>
-#include "../datastore.hpp"
+#include "../lib/datastore.hpp"
 #include "../models/medium.hpp"
 #include "../models/book.hpp"
 #include "../models/cd.hpp"
