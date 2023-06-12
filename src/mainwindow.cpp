@@ -3,20 +3,20 @@
 #include "./ui_mainwindow.h"
 #include <QTableWidget>
 #include "datastore.hpp"
-#include "medium.hpp"
+#include "models/medium.hpp"
+#include "models/book.hpp"
+#include "models/cd.hpp"
+#include "models/dvd.hpp"
 #include <QTableWidget>
 #include <QStringList>
 #include <QHeaderView>
 #include <QPushButton>
-#include "book.hpp"
 #include <QFormLayout>
 #include <QLabel>
 #include <QLineEdit>
 #include <QGridLayout>
 #include <QDialogButtonBox>
 #include <QComboBox>
-#include "cd.hpp"
-#include "dvd.hpp"
 #include <map>
 
 MainWindow::MainWindow(QWidget *parent)

@@ -4,8 +4,8 @@
 
 #include <QMainWindow>
 #include "datastore.hpp"
-#include "medium.hpp"
-#include "person.hpp"
+#include "models/medium.hpp"
+#include "models/person.hpp"
 #include <QDialogButtonBox>
 
 QT_BEGIN_NAMESPACE
