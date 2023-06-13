@@ -10,13 +10,21 @@
 #include <QUuid>
 #include <iostream>
 
-
 template <class T> class Datastore {
 private:
   QString file;
 
 public:
-  Datastore(QString file) : file(file){};
+  Datastore(QString file) : file(file) {
+    // Create file if it does not exist
+    QFileInfo checkFile(file);
+    if (!checkFile.exists() && !checkFile.isFile()) {
+      QSaveFile *file = new QSaveFile(this->file);
+      file->open(QIODevice::WriteOnly | QIODevice::Text);
+      file->commit();
+      delete file;
+    }
+  };
   void save(List<T> *data) const;
   List<T> *load();
   void update(QUuid id, T *item);
