@@ -234,6 +234,17 @@
              <property name="gridStyle">
               <enum>Qt::SolidLine</enum>
              </property>
+             <property name="sortingEnabled">
+              <bool>true</bool>
+             </property>
+             <attribute name="verticalHeaderVisible">
+              <bool>false</bool>
+             </attribute>
+             <column>
+              <property name="text">
+               <string>Type</string>
+              </property>
+             </column>
              <column>
               <property name="text">
                <string>Title</string>
@@ -241,7 +252,17 @@
              </column>
              <column>
               <property name="text">
+               <string>Creator</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
                <string>Year</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Owner</string>
               </property>
              </column>
              <column>
@@ -315,6 +336,9 @@
            </property>
            <property name="gridStyle">
             <enum>Qt::SolidLine</enum>
+           </property>
+           <property name="sortingEnabled">
+            <bool>true</bool>
            </property>
            <attribute name="verticalHeaderVisible">
             <bool>false</bool>

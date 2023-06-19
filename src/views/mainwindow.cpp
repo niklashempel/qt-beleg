@@ -124,24 +124,6 @@ void MainWindow::EditMedium(Medium *medium) {
 }
 
 void MainWindow::InitializeUi() {
-  QTableWidget *mediaTable = this->findChild<QTableWidget *>("mediaTable");
-  mediaTable->setColumnCount(7);
-  mediaTable->setHorizontalHeaderItem(0, new QTableWidgetItem("Type"));
-  mediaTable->setHorizontalHeaderItem(1, new QTableWidgetItem("Title"));
-  mediaTable->setHorizontalHeaderItem(2, new QTableWidgetItem("Creator"));
-  mediaTable->setHorizontalHeaderItem(3, new QTableWidgetItem("Year"));
-  mediaTable->setHorizontalHeaderItem(4, new QTableWidgetItem("Owner"));
-  mediaTable->setHorizontalHeaderItem(5, new QTableWidgetItem(""));
-  mediaTable->setHorizontalHeaderItem(6, new QTableWidgetItem(""));
-  mediaTable->verticalHeader()->hide();
-
-  QTableWidget *peopleTable = this->findChild<QTableWidget *>("peopleTable");
-  peopleTable->setRowCount(0);
-  peopleTable->setHorizontalHeaderItem(0, new QTableWidgetItem("First name"));
-  peopleTable->setHorizontalHeaderItem(1, new QTableWidgetItem("Last name"));
-  peopleTable->setHorizontalHeaderItem(2, new QTableWidgetItem(""));
-  peopleTable->setHorizontalHeaderItem(3, new QTableWidgetItem(""));
-  peopleTable->verticalHeader()->hide();
 
   QPushButton *addMediumButton =
       this->findChild<QPushButton *>("addMediumButton");
@@ -302,21 +284,21 @@ void MainWindow::LoadMedia() {
         medium.getOwner() != nullptr ? medium.getOwner()->toString() : "");
     table->setItem(row, 4, owner);
 
-    QPushButton *deleteButton = new QPushButton("Delete");
-    table->setCellWidget(row, 5, deleteButton);
-
     Medium *pItem = &medium;
+
+    QPushButton *editButton = new QPushButton("Edit");
+    table->setCellWidget(row, 5, editButton);
+    QObject::connect(editButton, &QPushButton::clicked,
+                     [=]() { EditMedium(pItem); });
+
+    QPushButton *deleteButton = new QPushButton("Delete");
+    table->setCellWidget(row, 6, deleteButton);
     QObject::connect(deleteButton, &QPushButton::clicked, [=]() {
       int row = table->currentRow();
       table->removeRow(row);
       media->remove(pItem);
       mediumStore.save(media);
     });
-
-    QPushButton *editButton = new QPushButton("Edit");
-    table->setCellWidget(row, 6, editButton);
-    QObject::connect(editButton, &QPushButton::clicked,
-                     [=]() { EditMedium(pItem); });
     row++;
   }
 }
@@ -338,10 +320,15 @@ void MainWindow::LoadPeople() {
     QTableWidgetItem *lastName = new QTableWidgetItem(item.getLastName());
     table->setItem(row, 1, lastName);
 
-    QPushButton *deleteButton = new QPushButton("Delete");
-    table->setCellWidget(row, 2, deleteButton);
-
     Person *pItem = &item;
+
+    QPushButton *editButton = new QPushButton("Edit");
+    table->setCellWidget(row, 2, editButton);
+    QObject::connect(editButton, &QPushButton::clicked,
+                     [=]() { EditPerson(pItem); });
+
+    QPushButton *deleteButton = new QPushButton("Delete");
+    table->setCellWidget(row, 3, deleteButton);
     QObject::connect(deleteButton, &QPushButton::clicked, [=]() {
       int row = table->currentRow();
       table->removeRow(row);
@@ -349,10 +336,6 @@ void MainWindow::LoadPeople() {
       personStore.save(people);
     });
 
-    QPushButton *editButton = new QPushButton("Edit");
-    table->setCellWidget(row, 3, editButton);
-    QObject::connect(editButton, &QPushButton::clicked,
-                     [=]() { EditPerson(pItem); });
     row++;
   }
 }
