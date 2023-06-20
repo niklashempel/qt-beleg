@@ -24,17 +24,17 @@ MainWindow::MainWindow(QWidget *parent)
       personStore(QApplication::applicationDirPath() + "/people.txt") {
   ui->setupUi(this);
 
-  InitializeUi();
+  initializeUi();
 
-  SetAddMediumVisible(false);
-  SetMediaListVisible(true);
-  SetAddPersonVisible(false);
-  SetPersonListVisible(true);
+  setAddMediumVisible(false);
+  setMediaListVisible(true);
+  setAddPersonVisible(false);
+  setPersonListVisible(true);
 }
 
 MainWindow::~MainWindow() { delete ui; }
 
-void MainWindow::SetAddMediumVisible(bool visible) {
+void MainWindow::setAddMediumVisible(bool visible) {
   QWidget *mediumWidget = this->findChild<QWidget *>("addMediumWidget");
   mediumWidget->setVisible(visible);
   if (visible) {
@@ -55,30 +55,30 @@ void MainWindow::SetAddMediumVisible(bool visible) {
   }
 }
 
-void MainWindow::SetMediaListVisible(bool visible) {
+void MainWindow::setMediaListVisible(bool visible) {
   QWidget *mediaListWidget = this->findChild<QWidget *>("mediaListWidget");
   mediaListWidget->setVisible(visible);
   if (visible) {
-    LoadMedia();
+    loadMedia();
   }
 }
 
-void MainWindow::SetAddPersonVisible(bool visible) {
+void MainWindow::setAddPersonVisible(bool visible) {
   QWidget *personWidget = this->findChild<QWidget *>("addPersonWidget");
   personWidget->setVisible(visible);
 }
 
-void MainWindow::SetPersonListVisible(bool visible) {
+void MainWindow::setPersonListVisible(bool visible) {
   QWidget *peopleListWidget = this->findChild<QWidget *>("peopleListWidget");
   peopleListWidget->setVisible(visible);
   if (visible) {
-    LoadPeople();
+    loadPeople();
   }
 }
 
-void MainWindow::ShowAddMedium() {
-  SetMediaListVisible(false);
-  SetAddMediumVisible(true);
+void MainWindow::showAddMedium() {
+  setMediaListVisible(false);
+  setAddMediumVisible(true);
   QLineEdit *title = this->findChild<QLineEdit *>("titleLineEdit");
   QLineEdit *creator = this->findChild<QLineEdit *>("creatorLineEdit");
   QLineEdit *year = this->findChild<QLineEdit *>("yearLineEdit");
@@ -90,9 +90,9 @@ void MainWindow::ShowAddMedium() {
   this->selectedMedium = NULL;
 }
 
-void MainWindow::ShowAddPerson() {
-  SetPersonListVisible(false);
-  SetAddPersonVisible(true);
+void MainWindow::showAddPerson() {
+  setPersonListVisible(false);
+  setAddPersonVisible(true);
   QLineEdit *firstName = this->findChild<QLineEdit *>("firstNameLineEdit");
   QLineEdit *lastName = this->findChild<QLineEdit *>("lastNameLineEdit");
   firstName->setText("");
@@ -100,9 +100,9 @@ void MainWindow::ShowAddPerson() {
   this->selectedPerson = NULL;
 }
 
-void MainWindow::ShowEditPerson(Person *person) {
-  SetPersonListVisible(false);
-  SetAddPersonVisible(true);
+void MainWindow::showEditPerson(Person *person) {
+  setPersonListVisible(false);
+  setAddPersonVisible(true);
   QLineEdit *firstName = this->findChild<QLineEdit *>("firstNameLineEdit");
   QLineEdit *lastName = this->findChild<QLineEdit *>("lastNameLineEdit");
   firstName->setText(person->getFirstName());
@@ -110,9 +110,9 @@ void MainWindow::ShowEditPerson(Person *person) {
   this->selectedPerson = person;
 }
 
-void MainWindow::ShowEditMedium(Medium *medium) {
-  SetMediaListVisible(false);
-  SetAddMediumVisible(true);
+void MainWindow::showEditMedium(Medium *medium) {
+  setMediaListVisible(false);
+  setAddMediumVisible(true);
   QLineEdit *title = this->findChild<QLineEdit *>("titleLineEdit");
   QLineEdit *creator = this->findChild<QLineEdit *>("creatorLineEdit");
   QLineEdit *year = this->findChild<QLineEdit *>("yearLineEdit");
@@ -125,17 +125,17 @@ void MainWindow::ShowEditMedium(Medium *medium) {
   this->selectedMedium = medium;
 }
 
-void MainWindow::InitializeUi() {
+void MainWindow::initializeUi() {
 
   QPushButton *addMediumButton =
       this->findChild<QPushButton *>("addMediumButton");
   QObject::connect(addMediumButton, &QPushButton::clicked,
-                   [=]() { ShowAddMedium(); });
+                   [=]() { showAddMedium(); });
 
   QPushButton *backButton = this->findChild<QPushButton *>("backButton");
   QObject::connect(backButton, &QPushButton::clicked, [=]() {
-    SetAddMediumVisible(false);
-    SetMediaListVisible(true);
+    setAddMediumVisible(false);
+    setMediaListVisible(true);
   });
 
   QLabel *creatorLabel = this->findChild<QLabel *>("creatorLabel");
@@ -154,13 +154,13 @@ void MainWindow::InitializeUi() {
   QPushButton *addPersonButton =
       this->findChild<QPushButton *>("addPersonButton");
   QObject::connect(addPersonButton, &QPushButton::clicked,
-                   [=]() { ShowAddPerson(); });
+                   [=]() { showAddPerson(); });
 
   QPushButton *peopleBackButton =
       this->findChild<QPushButton *>("peopleBackButton");
   QObject::connect(peopleBackButton, &QPushButton::clicked, [=]() {
-    SetAddPersonVisible(false);
-    SetPersonListVisible(true);
+    setAddPersonVisible(false);
+    setPersonListVisible(true);
   });
   QFormLayout *addMediumLayout =
       this->findChild<QFormLayout *>("addMediumLayout");
@@ -174,22 +174,22 @@ void MainWindow::InitializeUi() {
       this->findChild<QDialogButtonBox *>("peopleDialogButtonBox");
 
   QObject::connect(mediaDialogButtonBox, &QDialogButtonBox::rejected, [=]() {
-    SetAddMediumVisible(false);
-    SetMediaListVisible(true);
+    setAddMediumVisible(false);
+    setMediaListVisible(true);
   });
   QObject::connect(mediaDialogButtonBox, &QDialogButtonBox::accepted,
-                   [=]() { AddOrEditMedium(); });
+                   [=]() { addOrEditMedium(); });
 
   QObject::connect(peopleDialogButtonBox, &QDialogButtonBox::rejected, [=]() {
-    SetAddPersonVisible(false);
-    SetPersonListVisible(true);
+    setAddPersonVisible(false);
+    setPersonListVisible(true);
   });
 
   QObject::connect(peopleDialogButtonBox, &QDialogButtonBox::accepted,
-                   [=]() { AddOrEditPerson(); });
+                   [=]() { addOrEditPerson(); });
 }
 
-void MainWindow::LoadMedia() {
+void MainWindow::loadMedia() {
   QTableWidget *table = this->findChild<QTableWidget *>("mediaTable");
   table->setRowCount(0);
 
@@ -233,7 +233,7 @@ void MainWindow::LoadMedia() {
     QPushButton *editButton = new QPushButton("Edit");
     table->setCellWidget(row, 5, editButton);
     QObject::connect(editButton, &QPushButton::clicked,
-                     [=]() { ShowEditMedium(pItem); });
+                     [=]() { showEditMedium(pItem); });
 
     QPushButton *deleteButton = new QPushButton("Delete");
     table->setCellWidget(row, 6, deleteButton);
@@ -247,7 +247,7 @@ void MainWindow::LoadMedia() {
   }
 }
 
-void MainWindow::LoadPeople() {
+void MainWindow::loadPeople() {
   QTableWidget *table = this->findChild<QTableWidget *>("peopleTable");
   table->setRowCount(0);
 
@@ -269,7 +269,7 @@ void MainWindow::LoadPeople() {
     QPushButton *editButton = new QPushButton("Edit");
     table->setCellWidget(row, 2, editButton);
     QObject::connect(editButton, &QPushButton::clicked,
-                     [=]() { ShowEditPerson(pItem); });
+                     [=]() { showEditPerson(pItem); });
 
     QPushButton *deleteButton = new QPushButton("Delete");
     table->setCellWidget(row, 3, deleteButton);
@@ -284,7 +284,7 @@ void MainWindow::LoadPeople() {
   }
 }
 
-void MainWindow::AddOrEditMedium() {
+void MainWindow::addOrEditMedium() {
   QLineEdit *title = this->findChild<QLineEdit *>("titleLineEdit");
   QLineEdit *creator = this->findChild<QLineEdit *>("creatorLineEdit");
   QLineEdit *year = this->findChild<QLineEdit *>("yearLineEdit");
@@ -327,11 +327,11 @@ void MainWindow::AddOrEditMedium() {
       mediumStore.update(selectedMedium->getId(), selectedMedium);
     }
   }
-  SetAddMediumVisible(false);
-  SetMediaListVisible(true);
+  setAddMediumVisible(false);
+  setMediaListVisible(true);
 }
 
-void MainWindow::AddOrEditPerson() {
+void MainWindow::addOrEditPerson() {
   QLineEdit *firstName = this->findChild<QLineEdit *>("firstNameLineEdit");
   QLineEdit *lastName = this->findChild<QLineEdit *>("lastNameLineEdit");
 
@@ -344,6 +344,6 @@ void MainWindow::AddOrEditPerson() {
     this->selectedPerson->setLastName(lastName->text());
     personStore.update(selectedPerson->getId(), selectedPerson);
   }
-  SetAddPersonVisible(false);
-  SetPersonListVisible(true);
+  setAddPersonVisible(false);
+  setPersonListVisible(true);
 }

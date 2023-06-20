@@ -25,25 +25,25 @@ public:
 
 private:
   Ui::MainWindow *ui;
-  void LoadMedia();
-  void LoadPeople();
-  void ShowAddMedium();
-  void ShowAddPerson();
-  void ShowEditPerson(Person *person);
-  void ShowEditMedium(Medium *medium);
-  void InitializeUi();
-  void SetAddMediumVisible(bool);
-  void SetMediaListVisible(bool);
-  void SetAddPersonVisible(bool);
-  void SetPersonListVisible(bool);
+  void loadMedia();
+  void loadPeople();
+  void showAddMedium();
+  void showAddPerson();
+  void showEditPerson(Person *person);
+  void showEditMedium(Medium *medium);
+  void initializeUi();
+  void setAddMediumVisible(bool);
+  void setMediaListVisible(bool);
+  void setAddPersonVisible(bool);
+  void setPersonListVisible(bool);
+  void addOrEditMedium();
+  void addOrEditPerson();
   Datastore<Medium> mediumStore;
   Datastore<Person> personStore;
   QDialogButtonBox *mediaDialogButtonBox;
   QDialogButtonBox *peopleDialogButtonBox;
   Medium *selectedMedium;
   Person *selectedPerson;
-  void AddOrEditMedium();
-  void AddOrEditPerson();
 };
 
 #endif // MAINWINDOW_H
