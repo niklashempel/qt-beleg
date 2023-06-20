@@ -20,8 +20,8 @@
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow),
-      mediumStore(QCoreApplication::applicationDirPath() + "/media.txt"),
-      personStore(QCoreApplication::applicationDirPath() + "/people.txt") {
+      mediumStore(QApplication::applicationDirPath() + "/media.txt"),
+      personStore(QApplication::applicationDirPath() + "/people.txt") {
   ui->setupUi(this);
 
   InitializeUi();
@@ -50,6 +50,8 @@ void MainWindow::SetAddMediumVisible(bool visible) {
       ownerComboBox->setItemData(ownerComboBox->count() - 1,
                                  QVariant::fromValue(person.getId()));
     }
+
+    ownerComboBox->model()->sort(0);
   }
 }
 
