@@ -85,7 +85,7 @@ void MainWindow::showAddMedium() {
   QComboBox *ownerComboBox = this->findChild<QComboBox *>("ownerComboBox");
   title->setText("");
   creator->setText("");
-  year->setText("");
+  year->setText(QDateTime::currentDateTime().toString("yyyy"));
   ownerComboBox->setCurrentIndex(0);
   this->selectedMedium = NULL;
 }
