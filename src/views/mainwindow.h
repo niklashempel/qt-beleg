@@ -27,10 +27,10 @@ private:
   Ui::MainWindow *ui;
   void LoadMedia();
   void LoadPeople();
-  void AddMedium();
-  void AddPerson();
-  void EditPerson(Person *person);
-  void EditMedium(Medium *medium);
+  void ShowAddMedium();
+  void ShowAddPerson();
+  void ShowEditPerson(Person *person);
+  void ShowEditMedium(Medium *medium);
   void InitializeUi();
   void SetAddMediumVisible(bool);
   void SetMediaListVisible(bool);
@@ -42,6 +42,8 @@ private:
   QDialogButtonBox *peopleDialogButtonBox;
   Medium *selectedMedium;
   Person *selectedPerson;
+  void AddOrEditMedium();
+  void AddOrEditPerson();
 };
 
 #endif // MAINWINDOW_H
