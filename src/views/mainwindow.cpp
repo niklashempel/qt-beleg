@@ -285,9 +285,9 @@ void MainWindow::loadPeople() {
 }
 
 void MainWindow::addOrEditMedium() {
-  QLineEdit *title = this->findChild<QLineEdit *>("titleLineEdit");
-  QLineEdit *creator = this->findChild<QLineEdit *>("creatorLineEdit");
-  QLineEdit *year = this->findChild<QLineEdit *>("yearLineEdit");
+  QString title = this->findChild<QLineEdit *>("titleLineEdit")->text();
+  QString creator = this->findChild<QLineEdit *>("creatorLineEdit")->text();
+  int year = this->findChild<QLineEdit *>("yearLineEdit")->text().toInt();
   QComboBox *ownerComboBox = this->findChild<QComboBox *>("ownerComboBox");
 
   if (selectedMedium == NULL) {
@@ -296,14 +296,11 @@ void MainWindow::addOrEditMedium() {
     QString text = mediumType->currentText();
     QUuid ownerId = ownerComboBox->currentData().value<QUuid>();
     if (text == "Book") {
-      medium = new Book(title->text(), creator->text(), year->text().toInt(),
-                        ownerId);
+      medium = new Book(title, creator, year, ownerId);
     } else if (text == "CD") {
-      medium =
-          new Cd(title->text(), creator->text(), year->text().toInt(), ownerId);
+      medium = new Cd(title, creator, year, ownerId);
     } else if (text == "DVD") {
-      medium = new Dvd(title->text(), creator->text(), year->text().toInt(),
-                       ownerId);
+      medium = new Dvd(title, creator, year, ownerId);
     } else {
       std::cout << "Unknown medium type: " + text.toStdString() << std::endl;
       return;
@@ -311,9 +308,9 @@ void MainWindow::addOrEditMedium() {
     mediumStore.add(medium);
     delete medium;
   } else {
-    selectedMedium->setTitle(title->text());
-    selectedMedium->setCreator(creator->text());
-    selectedMedium->setYear(year->text().toInt());
+    selectedMedium->setTitle(title);
+    selectedMedium->setCreator(creator);
+    selectedMedium->setYear(year);
     if (ownerComboBox->currentIndex() != -1) {
       QUuid id = ownerComboBox->currentData().toUuid();
       if (id.isNull()) {
@@ -332,16 +329,16 @@ void MainWindow::addOrEditMedium() {
 }
 
 void MainWindow::addOrEditPerson() {
-  QLineEdit *firstName = this->findChild<QLineEdit *>("firstNameLineEdit");
-  QLineEdit *lastName = this->findChild<QLineEdit *>("lastNameLineEdit");
+  QString firstName = this->findChild<QLineEdit *>("firstNameLineEdit")->text();
+  QString lastName = this->findChild<QLineEdit *>("lastNameLineEdit")->text();
 
   if (this->selectedPerson == NULL) {
-    Person *person = new Person(firstName->text(), lastName->text());
+    Person *person = new Person(firstName, lastName);
     personStore.add(person);
     delete person;
   } else {
-    this->selectedPerson->setFirstName(firstName->text());
-    this->selectedPerson->setLastName(lastName->text());
+    this->selectedPerson->setFirstName(firstName);
+    this->selectedPerson->setLastName(lastName);
     personStore.update(selectedPerson->getId(), selectedPerson);
   }
   setAddPersonVisible(false);
