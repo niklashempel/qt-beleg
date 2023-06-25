@@ -1,3 +1,7 @@
+# author: Niklas Hempel
+# mail: s85509@htw-dresden.de
+# group: 22/041/65
+
 cmake_minimum_required(VERSION 3.5)
 
 set(CMAKE_AUTOUIC ON)

@@ -1,3 +1,9 @@
+/*
+ * author: Niklas Hempel
+ * mail: s85509@htw-dresden.de
+ * group: 22/041/65
+ */
+
 #ifndef MEDIUM_HPP
 #define MEDIUM_HPP
 
@@ -5,7 +11,6 @@
 #include <QString>
 #include <QStringList>
 #include <QUuid>
-
 
 class Medium {
 private:

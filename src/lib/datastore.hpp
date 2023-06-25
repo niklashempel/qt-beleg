@@ -1,3 +1,9 @@
+/*
+ * author: Niklas Hempel
+ * mail: s85509@htw-dresden.de
+ * group: 22/041/65
+ */
+
 #ifndef DATASTORE_HPP
 #define DATASTORE_HPP
 
