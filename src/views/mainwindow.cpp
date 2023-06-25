@@ -19,7 +19,6 @@
 #include <QTableWidget>
 #include <map>
 
-
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow),
       mediumStore(QApplication::applicationDirPath() + "/media.txt"),
@@ -44,7 +43,6 @@ void MainWindow::setAddMediumVisible(bool visible) {
     ownerComboBox->clear();
     List<Person> *people = personStore.load();
     ownerComboBox->addItem("None");
-    ownerComboBox->setItemData(0, QVariant::fromValue(QUuid()));
 
     for (auto &person : *people) {
       ownerComboBox->addItem(person.getFirstName() + " " +
@@ -54,6 +52,17 @@ void MainWindow::setAddMediumVisible(bool visible) {
     }
 
     ownerComboBox->model()->sort(0);
+    ownerComboBox->insertItem(0, "None");
+    ownerComboBox->setItemData(0, QVariant::fromValue(QUuid()));
+
+    QPushButton *returnMediumButton =
+        this->findChild<QPushButton *>("returnMediumButton");
+
+    if (selectedMedium != NULL && selectedMedium->getOwnerId().isNull()) {
+      returnMediumButton->setVisible(true);
+    } else {
+      returnMediumButton->setVisible(false);
+    }
   }
 }
 
@@ -138,6 +147,15 @@ void MainWindow::initializeUi() {
   QObject::connect(backButton, &QPushButton::clicked, [=]() {
     setAddMediumVisible(false);
     setMediaListVisible(true);
+  });
+
+  QPushButton *returnMediumButton =
+      this->findChild<QPushButton *>("returnMediumButton");
+  QObject::connect(returnMediumButton, &QPushButton::clicked, [=]() {
+    if (selectedMedium != NULL) {
+      QComboBox *ownerComboBox = this->findChild<QComboBox *>("ownerComboBox");
+      ownerComboBox->setCurrentText("None");
+    }
   });
 
   QLabel *creatorLabel = this->findChild<QLabel *>("creatorLabel");
