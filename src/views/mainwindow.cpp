@@ -36,10 +36,10 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow() { delete ui; }
 
 void MainWindow::setAddMediumVisible(bool visible) {
-  QWidget *mediumWidget = this->findChild<QWidget *>("addMediumWidget");
+  QWidget *mediumWidget = ui->addMediumWidget;
   mediumWidget->setVisible(visible);
   if (visible) {
-    QComboBox *ownerComboBox = this->findChild<QComboBox *>("ownerComboBox");
+    QComboBox *ownerComboBox = ui->ownerComboBox;
     ownerComboBox->clear();
     List<Person> *people = personStore.load();
 
@@ -54,8 +54,7 @@ void MainWindow::setAddMediumVisible(bool visible) {
     ownerComboBox->insertItem(0, "None");
     ownerComboBox->setItemData(0, QVariant::fromValue(QUuid()));
 
-    QPushButton *returnMediumButton =
-        this->findChild<QPushButton *>("returnMediumButton");
+    QPushButton *returnMediumButton = ui->returnMediumButton;
 
     if (selectedMedium != NULL && !selectedMedium->getOwnerId().isNull()) {
       returnMediumButton->setVisible(true);
@@ -66,7 +65,7 @@ void MainWindow::setAddMediumVisible(bool visible) {
 }
 
 void MainWindow::setMediaListVisible(bool visible) {
-  QWidget *mediaListWidget = this->findChild<QWidget *>("mediaListWidget");
+  QWidget *mediaListWidget = ui->mediaListWidget;
   mediaListWidget->setVisible(visible);
   if (visible) {
     loadMedia();
@@ -74,12 +73,12 @@ void MainWindow::setMediaListVisible(bool visible) {
 }
 
 void MainWindow::setAddPersonVisible(bool visible) {
-  QWidget *personWidget = this->findChild<QWidget *>("addPersonWidget");
+  QWidget *personWidget = ui->addPersonWidget;
   personWidget->setVisible(visible);
 }
 
 void MainWindow::setPersonListVisible(bool visible) {
-  QWidget *peopleListWidget = this->findChild<QWidget *>("peopleListWidget");
+  QWidget *peopleListWidget = ui->peopleListWidget;
   peopleListWidget->setVisible(visible);
   if (visible) {
     loadPeople();
@@ -90,10 +89,10 @@ void MainWindow::showAddMedium() {
   this->selectedMedium = NULL;
   setMediaListVisible(false);
   setAddMediumVisible(true);
-  QLineEdit *title = this->findChild<QLineEdit *>("titleLineEdit");
-  QLineEdit *creator = this->findChild<QLineEdit *>("creatorLineEdit");
-  QLineEdit *year = this->findChild<QLineEdit *>("yearLineEdit");
-  QComboBox *ownerComboBox = this->findChild<QComboBox *>("ownerComboBox");
+  QLineEdit *title = ui->titleLineEdit;
+  QLineEdit *creator = ui->creatorLineEdit;
+  QLineEdit *year = ui->yearLineEdit;
+  QComboBox *ownerComboBox = ui->ownerComboBox;
   title->setText("");
   creator->setText("");
   year->setText(QDateTime::currentDateTime().toString("yyyy"));
@@ -103,8 +102,8 @@ void MainWindow::showAddMedium() {
 void MainWindow::showAddPerson() {
   setPersonListVisible(false);
   setAddPersonVisible(true);
-  QLineEdit *firstName = this->findChild<QLineEdit *>("firstNameLineEdit");
-  QLineEdit *lastName = this->findChild<QLineEdit *>("lastNameLineEdit");
+  QLineEdit *firstName = ui->firstNameLineEdit;
+  QLineEdit *lastName = ui->lastNameLineEdit;
   firstName->setText("");
   lastName->setText("");
   this->selectedPerson = NULL;
@@ -113,8 +112,8 @@ void MainWindow::showAddPerson() {
 void MainWindow::showEditPerson(Person *person) {
   setPersonListVisible(false);
   setAddPersonVisible(true);
-  QLineEdit *firstName = this->findChild<QLineEdit *>("firstNameLineEdit");
-  QLineEdit *lastName = this->findChild<QLineEdit *>("lastNameLineEdit");
+  QLineEdit *firstName = ui->firstNameLineEdit;
+  QLineEdit *lastName = ui->lastNameLineEdit;
   firstName->setText(person->getFirstName());
   lastName->setText(person->getLastName());
   this->selectedPerson = person;
@@ -124,10 +123,10 @@ void MainWindow::showEditMedium(Medium *medium) {
   this->selectedMedium = medium;
   setMediaListVisible(false);
   setAddMediumVisible(true);
-  QLineEdit *title = this->findChild<QLineEdit *>("titleLineEdit");
-  QLineEdit *creator = this->findChild<QLineEdit *>("creatorLineEdit");
-  QLineEdit *year = this->findChild<QLineEdit *>("yearLineEdit");
-  QComboBox *ownerComboBox = this->findChild<QComboBox *>("ownerComboBox");
+  QLineEdit *title = ui->titleLineEdit;
+  QLineEdit *creator = ui->creatorLineEdit;
+  QLineEdit *year = ui->yearLineEdit;
+  QComboBox *ownerComboBox = ui->ownerComboBox;
   title->setText(medium->getTitle());
   creator->setText(medium->getCreator());
   year->setText(QString::number(medium->getYear()));
@@ -137,28 +136,26 @@ void MainWindow::showEditMedium(Medium *medium) {
 
 void MainWindow::initializeUi() {
 
-  QPushButton *addMediumButton =
-      this->findChild<QPushButton *>("addMediumButton");
+  QPushButton *addMediumButton = ui->addMediumButton;
   QObject::connect(addMediumButton, &QPushButton::clicked,
                    [=]() { showAddMedium(); });
 
-  QPushButton *backButton = this->findChild<QPushButton *>("backButton");
+  QPushButton *backButton = ui->backButton;
   QObject::connect(backButton, &QPushButton::clicked, [=]() {
     setAddMediumVisible(false);
     setMediaListVisible(true);
   });
 
-  QPushButton *returnMediumButton =
-      this->findChild<QPushButton *>("returnMediumButton");
+  QPushButton *returnMediumButton = ui->returnMediumButton;
   QObject::connect(returnMediumButton, &QPushButton::clicked, [=]() {
     if (selectedMedium != NULL) {
-      QComboBox *ownerComboBox = this->findChild<QComboBox *>("ownerComboBox");
+      QComboBox *ownerComboBox = ui->ownerComboBox;
       ownerComboBox->setCurrentText("None");
     }
   });
 
-  QLabel *creatorLabel = this->findChild<QLabel *>("creatorLabel");
-  QComboBox *mediumType = this->findChild<QComboBox *>("mediumComboBox");
+  QLabel *creatorLabel = ui->creatorLabel;
+  QComboBox *mediumType = ui->mediumComboBox;
   QObject::connect(mediumType, &QComboBox::currentTextChanged, [=]() {
     QString text = mediumType->currentText();
     if (text == "Book") {
@@ -170,27 +167,21 @@ void MainWindow::initializeUi() {
     }
   });
 
-  QPushButton *addPersonButton =
-      this->findChild<QPushButton *>("addPersonButton");
+  QPushButton *addPersonButton = ui->addPersonButton;
   QObject::connect(addPersonButton, &QPushButton::clicked,
                    [=]() { showAddPerson(); });
 
-  QPushButton *peopleBackButton =
-      this->findChild<QPushButton *>("peopleBackButton");
+  QPushButton *peopleBackButton = ui->peopleBackButton;
   QObject::connect(peopleBackButton, &QPushButton::clicked, [=]() {
     setAddPersonVisible(false);
     setPersonListVisible(true);
   });
-  QFormLayout *addMediumLayout =
-      this->findChild<QFormLayout *>("addMediumLayout");
+  QFormLayout *addMediumLayout = ui->addMediumLayout;
 
-  QFormLayout *addPersonLayout =
-      this->findChild<QFormLayout *>("addPersonLayout");
+  QFormLayout *addPersonLayout = ui->addPersonLayout;
 
-  QDialogButtonBox *mediaDialogButtonBox =
-      this->findChild<QDialogButtonBox *>("mediaDialogButtonBox");
-  QDialogButtonBox *peopleDialogButtonBox =
-      this->findChild<QDialogButtonBox *>("peopleDialogButtonBox");
+  QDialogButtonBox *mediaDialogButtonBox = ui->mediaDialogButtonBox;
+  QDialogButtonBox *peopleDialogButtonBox = ui->peopleDialogButtonBox;
 
   QObject::connect(mediaDialogButtonBox, &QDialogButtonBox::rejected, [=]() {
     setAddMediumVisible(false);
@@ -209,7 +200,7 @@ void MainWindow::initializeUi() {
 }
 
 void MainWindow::loadMedia() {
-  QTableWidget *table = this->findChild<QTableWidget *>("mediaTable");
+  QTableWidget *table = ui->mediaTable;
   table->setRowCount(0);
 
   List<Medium> *media = mediumStore.load();
@@ -267,7 +258,7 @@ void MainWindow::loadMedia() {
 }
 
 void MainWindow::loadPeople() {
-  QTableWidget *table = this->findChild<QTableWidget *>("peopleTable");
+  QTableWidget *table = ui->peopleTable;
   table->setRowCount(0);
 
   List<Person> *people = personStore.load();
@@ -304,14 +295,14 @@ void MainWindow::loadPeople() {
 }
 
 void MainWindow::addOrEditMedium() {
-  QString title = this->findChild<QLineEdit *>("titleLineEdit")->text();
-  QString creator = this->findChild<QLineEdit *>("creatorLineEdit")->text();
-  int year = this->findChild<QLineEdit *>("yearLineEdit")->text().toInt();
-  QComboBox *ownerComboBox = this->findChild<QComboBox *>("ownerComboBox");
+  QString title = ui->titleLineEdit->text();
+  QString creator = ui->creatorLineEdit->text();
+  int year = ui->yearLineEdit->text().toInt();
+  QComboBox *ownerComboBox = ui->ownerComboBox;
 
   if (selectedMedium == NULL) {
     Medium *medium;
-    QComboBox *mediumType = this->findChild<QComboBox *>("mediumComboBox");
+    QComboBox *mediumType = ui->mediumComboBox;
     QString text = mediumType->currentText();
     QUuid ownerId = ownerComboBox->currentData().value<QUuid>();
     if (text == "Book") {
@@ -348,8 +339,8 @@ void MainWindow::addOrEditMedium() {
 }
 
 void MainWindow::addOrEditPerson() {
-  QString firstName = this->findChild<QLineEdit *>("firstNameLineEdit")->text();
-  QString lastName = this->findChild<QLineEdit *>("lastNameLineEdit")->text();
+  QString firstName = ui->firstNameLineEdit->text();
+  QString lastName = ui->lastNameLineEdit->text();
 
   if (this->selectedPerson == NULL) {
     Person *person = new Person(firstName, lastName);
