@@ -13,7 +13,6 @@ public:
     return this->getId().toString() + "," + QString::number(MediumType::DVD) +
            "," + this->getTitle() + "," + this->getCreator() + "," +
            QString::number(this->getYear()) + "," +
-           QString::number(this->getYear()) + "," +
            this->getOwnerId().toString();
   };
   QString getType() const { return "DVD"; };
