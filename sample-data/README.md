@@ -1,0 +1,1 @@
+This directory contains sample data for the application. To use it, copy the files `media.txt` and `people.txt` to the [build directory](./../build/)(or the directory where the executable is located).

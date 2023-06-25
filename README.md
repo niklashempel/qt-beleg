@@ -26,6 +26,15 @@ cmake -B ./build -DCMAKE_BUILD_TYPE=Release
 cmake --build ./build --config Release
 ```
 
+### Optional: Seed
+
+To seed the application with sample data, copy the files `media.txt` and `people.txt` to the [build directory](./build/).
+
+```sh
+cp ./sample-data/media.txt ./build/media.txt
+cp ./sample-data/people.txt ./build/people.txt
+```
+
 ## Run
 
 ```sh
