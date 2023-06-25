@@ -42,7 +42,6 @@ void MainWindow::setAddMediumVisible(bool visible) {
     QComboBox *ownerComboBox = this->findChild<QComboBox *>("ownerComboBox");
     ownerComboBox->clear();
     List<Person> *people = personStore.load();
-    ownerComboBox->addItem("None");
 
     for (auto &person : *people) {
       ownerComboBox->addItem(person.getFirstName() + " " +
@@ -58,7 +57,7 @@ void MainWindow::setAddMediumVisible(bool visible) {
     QPushButton *returnMediumButton =
         this->findChild<QPushButton *>("returnMediumButton");
 
-    if (selectedMedium != NULL && selectedMedium->getOwnerId().isNull()) {
+    if (selectedMedium != NULL && !selectedMedium->getOwnerId().isNull()) {
       returnMediumButton->setVisible(true);
     } else {
       returnMediumButton->setVisible(false);
@@ -88,6 +87,7 @@ void MainWindow::setPersonListVisible(bool visible) {
 }
 
 void MainWindow::showAddMedium() {
+  this->selectedMedium = NULL;
   setMediaListVisible(false);
   setAddMediumVisible(true);
   QLineEdit *title = this->findChild<QLineEdit *>("titleLineEdit");
@@ -98,7 +98,6 @@ void MainWindow::showAddMedium() {
   creator->setText("");
   year->setText(QDateTime::currentDateTime().toString("yyyy"));
   ownerComboBox->setCurrentIndex(0);
-  this->selectedMedium = NULL;
 }
 
 void MainWindow::showAddPerson() {
@@ -122,6 +121,7 @@ void MainWindow::showEditPerson(Person *person) {
 }
 
 void MainWindow::showEditMedium(Medium *medium) {
+  this->selectedMedium = medium;
   setMediaListVisible(false);
   setAddMediumVisible(true);
   QLineEdit *title = this->findChild<QLineEdit *>("titleLineEdit");
@@ -133,7 +133,6 @@ void MainWindow::showEditMedium(Medium *medium) {
   year->setText(QString::number(medium->getYear()));
   ownerComboBox->setCurrentIndex(
       ownerComboBox->findData(QVariant::fromValue(medium->getOwnerId())));
-  this->selectedMedium = medium;
 }
 
 void MainWindow::initializeUi() {
