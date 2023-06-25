@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Media control</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <property name="sizePolicy">
@@ -420,7 +420,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1121</width>
+     <width>999</width>
      <height>21</height>
     </rect>
    </property>
