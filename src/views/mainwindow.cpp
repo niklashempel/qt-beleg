@@ -132,6 +132,7 @@ void MainWindow::showEditMedium(Medium *medium) {
   year->setText(QString::number(medium->getYear()));
   ownerComboBox->setCurrentIndex(
       ownerComboBox->findData(QVariant::fromValue(medium->getOwnerId())));
+  ui->mediumComboBox->setCurrentText(medium->getType());
 }
 
 void MainWindow::initializeUi() {
@@ -299,12 +300,12 @@ void MainWindow::addOrEditMedium() {
   QString creator = ui->creatorLineEdit->text();
   int year = ui->yearLineEdit->text().toInt();
   QComboBox *ownerComboBox = ui->ownerComboBox;
+  QComboBox *mediumType = ui->mediumComboBox;
+  QString text = mediumType->currentText();
+  QUuid ownerId = ownerComboBox->currentData().value<QUuid>();
 
   if (selectedMedium == NULL) {
     Medium *medium;
-    QComboBox *mediumType = ui->mediumComboBox;
-    QString text = mediumType->currentText();
-    QUuid ownerId = ownerComboBox->currentData().value<QUuid>();
     if (text == "Book") {
       medium = new Book(title, creator, year, ownerId);
     } else if (text == "CD") {
@@ -318,19 +319,35 @@ void MainWindow::addOrEditMedium() {
     mediumStore.add(medium);
     delete medium;
   } else {
-    selectedMedium->setTitle(title);
-    selectedMedium->setCreator(creator);
-    selectedMedium->setYear(year);
+    if (selectedMedium->getType() != text) {
+      if (text == "Book") {
+        selectedMedium =
+            new Book(selectedMedium->getId(), title, creator, year, ownerId);
+      } else if (text == "CD") {
+        selectedMedium =
+            new Cd(selectedMedium->getId(), title, creator, year, ownerId);
+      } else if (text == "DVD") {
+        selectedMedium =
+            new Dvd(selectedMedium->getId(), title, creator, year, ownerId);
+      } else {
+        std::cout << "Unknown medium type: " + text.toStdString() << std::endl;
+        return;
+      }
+    } else {
+      selectedMedium->setTitle(title);
+      selectedMedium->setCreator(creator);
+      selectedMedium->setYear(year);
+    }
     if (ownerComboBox->currentIndex() != -1) {
-      QUuid id = ownerComboBox->currentData().toUuid();
-      if (id.isNull()) {
+      if (ownerId.isNull()) {
         selectedMedium->setOwner(nullptr);
       } else {
-        Person *owner = personStore.find(id);
+        Person *owner = personStore.find(ownerId);
         if (owner != nullptr) {
           selectedMedium->setOwner(owner);
         }
       }
+
       mediumStore.update(selectedMedium->getId(), selectedMedium);
     }
   }
