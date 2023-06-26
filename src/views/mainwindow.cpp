@@ -207,6 +207,7 @@ void MainWindow::initializeUi() {
 
 void MainWindow::loadMedia() {
   QTableWidget *table = ui->mediaTable;
+  table->setSortingEnabled(false);
   table->setRowCount(0);
 
   List<Medium> *media = mediumStore.load();
@@ -261,10 +262,12 @@ void MainWindow::loadMedia() {
     });
     row++;
   }
+  table->setSortingEnabled(true);
 }
 
 void MainWindow::loadPeople() {
   QTableWidget *table = ui->peopleTable;
+  table->setSortingEnabled(false);
   table->setRowCount(0);
 
   List<Person> *people = personStore.load();
@@ -298,6 +301,7 @@ void MainWindow::loadPeople() {
 
     row++;
   }
+  table->setSortingEnabled(true);
 }
 
 void MainWindow::addOrEditMedium() {
