@@ -325,6 +325,7 @@ void MainWindow::addOrEditMedium() {
     delete medium;
   } else {
     if (selectedMedium->getType() != text) {
+      delete selectedMedium;
       if (text == "Book") {
         selectedMedium =
             new Book(selectedMedium->getId(), title, creator, year, ownerId);
